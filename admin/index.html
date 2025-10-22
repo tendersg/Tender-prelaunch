@@ -1,0 +1,89 @@
+<a href="admin.html" class="text-white hover:underline">Admin Dashboard</a>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tender — Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-blue-600 text-white py-4 px-6 flex justify-between items-center shadow">
+    <h1 class="text-2xl font-bold">Tender — Waitlist Admin</h1>
+    <a href="index.html" class="bg-white text-blue-600 px-4 py-2 rounded hover:bg-gray-200 transition">Back to Landing</a>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6 max-w-5xl mx-auto w-full">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-semibold">Registered Users</h2>
+      <button id="clearData" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">Clear All</button>
+    </div>
+
+    <!-- Table Container -->
+    <div class="overflow-x-auto bg-white rounded-lg shadow">
+      <table class="w-full text-left border-collapse">
+        <thead class="bg-blue-600 text-white">
+          <tr>
+            <th class="px-4 py-3">#</th>
+            <th class="px-4 py-3">Name</th>
+            <th class="px-4 py-3">Mobile</th>
+            <th class="px-4 py-3">Email</th>
+          </tr>
+        </thead>
+        <tbody id="userTable" class="divide-y divide-gray-200">
+          <!-- Users will be injected here -->
+        </tbody>
+      </table>
+    </div>
+
+    <div id="noData" class="text-center mt-6 text-gray-600 hidden">
+      <p>No users have joined the waitlist yet.</p>
+    </div>
+  </main>
+
+  <script>
+    const userTable = document.getElementById('userTable');
+    const noData = document.getElementById('noData');
+    const clearDataBtn = document.getElementById('clearData');
+
+    // Load users from localStorage
+    let users = JSON.parse(localStorage.getItem('tenderUsers')) || [];
+
+    function renderTable() {
+      userTable.innerHTML = '';
+
+      if (users.length === 0) {
+        noData.classList.remove('hidden');
+        return;
+      }
+
+      noData.classList.add('hidden');
+      users.forEach(user => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="px-4 py-3 font-medium">${user.number}</td>
+          <td class="px-4 py-3">${user.name}</td>
+          <td class="px-4 py-3">${user.mobile}</td>
+          <td class="px-4 py-3">${user.email}</td>
+        `;
+        userTable.appendChild(row);
+      });
+    }
+
+    clearDataBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to clear all user data?')) {
+        localStorage.removeItem('tenderUsers');
+        users = [];
+        renderTable();
+      }
+    });
+
+    renderTable();
+  </script>
+</body>
+</html>
